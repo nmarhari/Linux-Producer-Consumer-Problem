@@ -20,7 +20,7 @@ int main() {
 
 	sem_t *mutex = sem_open("mutex", O_CREAT, 0666, 1);
 	if (mutex == SEM_FAILED) { perror("error creating mutex"); exit(EXIT_FAILURE); }
-	sem_t *full = sem_open("full", O_CREAT,0666, 2);
+	sem_t *full = sem_open("full", O_CREAT,0666, 0);
 	if (full == SEM_FAILED) { perror("error creating full"); exit(EXIT_FAILURE); }
 	sem_t *empty = sem_open("empty", O_CREAT, 0666, SIZE);
 	if (empty == SEM_FAILED) { perror("error creating empty"); exit(EXIT_FAILURE); }
@@ -33,11 +33,9 @@ int main() {
 	
 	printf("consumer started consuming data\n");
 	for (int i = 0; i < SIZE; i++) {
-		sem_wait(full);
-		printf("prod passed wait full");
-		if (sem_wait(full) == -1) { perror("error waiting on full"); exit(EXIT_FAILURE); }
-		sem_wait(mutex);
-		if (sem_wait(mutex) == -1) { perror("error waiting on mutex"); exit(EXIT_FAILURE); }
+		if(sem_wait(full) == -1) { perror("error waiting on full"); exit(EXIT_FAILURE); }
+		if(sem_wait(mutex) == -1) { perror("error waiting on mutex"); exit(EXIT_FAILURE); }
+		
 		printf("inside for loop cons");
 		printf("Consumer: %d\n", tbl[i]);
 		sem_post(mutex);
