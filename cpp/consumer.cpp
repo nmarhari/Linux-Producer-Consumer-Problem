@@ -25,18 +25,14 @@ struct shmbuf {
 
 int main() {
 
-	sem_t *mutex = sem_open("mutex", O_CREAT, 0666, 1);
-	if (mutex == SEM_FAILED) { perror("error creating mutex"); exit(EXIT_FAILURE); }
-	sem_t *full = sem_open("full", O_CREAT,0666, 0);
-	if (full == SEM_FAILED) { perror("error creating full"); exit(EXIT_FAILURE); }
-	sem_t *empty = sem_open("empty", O_CREAT, 0666, SIZE);
-	if (empty == SEM_FAILED) { perror("error creating empty"); exit(EXIT_FAILURE); }
-
-	int shm = shm_open("table", O_RDONLY, 0666);
-
+	int fd = shm_open("table", O_RDONLY, 0666);
 	
-	int *tbl = (int*)mmap(0, SIZE, PROT_READ, MAP_SHARED, shm, 0);
-	printf("Consumer mapped address: %p\n", tbl);
+	struct shmbuf *shmp = mmap(NULL, sizeof(*shmp), PROT_READ, MAP_SHARED, fd, 0);
+	printf("Consumer mapped address: %p\n", shmp);
+	
+	sem_init(&shmp->mutex, 1, 1);
+	sem_init(&shmp->full, 1, 0);
+	sem_init(&shmp->empty, 1, 2);
 	
 	printf("consumer started consuming data\n");
 	for (int i = 0; i < SIZE; i++) {
