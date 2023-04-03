@@ -14,7 +14,6 @@
 #include <string.h>
 
 const int SIZE = 2;
-const int BUF_SIZE = 2;
 
 struct shmbuf {
 	sem_t mutex;
@@ -30,21 +29,18 @@ int main() {
 	struct shmbuf *shmp = mmap(NULL, sizeof(*shmp), PROT_READ, MAP_SHARED, fd, 0);
 	printf("Consumer mapped address: %p\n", shmp);
 	
-	sem_init(&shmp->mutex, 1, 1);
-	sem_init(&shmp->full, 1, 0);
-	sem_init(&shmp->empty, 1, 2);
+	sem_init(&shmp->sem_1, 1, 0);
+	sem_init(&shmp->sem_2, 1, 0);
 	
+	sem_wait(&shmp->sem_1);
 	printf("consumer started consuming data\n");
 	for (int i = 0; i < SIZE; i++) {
-		if(sem_wait(full) == -1) { perror("error waiting on full"); exit(EXIT_FAILURE); }
-		if(sem_wait(mutex) == -1) { perror("error waiting on mutex"); exit(EXIT_FAILURE); }
-		
-		printf("inside for loop cons");
-		printf("Consumer: %d\n", tbl[i]);
-		sem_post(mutex);
-		sem_post(empty);
+		printf("Accessed shared memory buffer.\n");
+		printf("Shared memory in buf[%d] is: ", i);
+		printf("%d", (shmp->buf[i]));
 	}
-		
+	
+	sem_post(&shmp->sem_2);
 	
 	munmap(tbl, SPACE);
 	close(shm);
