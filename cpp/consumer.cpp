@@ -14,7 +14,14 @@
 #include <string.h>
 
 const int SIZE = 2;
-const int SPACE = (SIZE * sizeof(int));
+const int BUF_SIZE = 2;
+
+struct shmbuf {
+	sem_t mutex;
+	sem_t full;
+	sem_t empty;
+	int buf[BUF_SIZE];
+};
 
 int main() {
 
