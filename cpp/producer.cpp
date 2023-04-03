@@ -21,7 +21,7 @@ int main() {
 
 	sem_t *mutex = sem_open("mutex", O_CREAT, 0666, 1);
 	if (mutex == SEM_FAILED) { perror("error creating mutex"); exit(EXIT_FAILURE); }
-	sem_t *full = sem_open("full", O_CREAT, 0666, 2);
+	sem_t *full = sem_open("full", O_CREAT, 0666, 0);
 	if (full == SEM_FAILED) { perror("error creating full"); exit(EXIT_FAILURE); }
 	sem_t *empty = sem_open("empty", O_CREAT, 0666, SIZE);
 	if (empty == SEM_FAILED) { perror("error creating empty"); exit(EXIT_FAILURE); }
@@ -39,10 +39,8 @@ int main() {
 	printf("producer started producing data\n");
 	for (int i = 0; i < SIZE; i++) {
 		sem_wait(empty);
-		if (sem_wait(empty) == -1) { perror("error waiting on empty"); exit(EXIT_FAILURE); }
 		printf("called wait(empty)");
-		sem_wait(mutex);
-		if (sem_wait(mutex) == -1) { perror("error waiting on mutex"); exit(EXIT_FAILURE); }		
+		sem_wait(mutex);		
 		printf("inside for loop prod");
 		tbl[i] = i;
 		printf("Producer: %d\n", i);
