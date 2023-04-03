@@ -13,9 +13,9 @@
 #include <stdio.h>
 #include <string.h>
 
-const int SIZE = 2;
+const int SIZE = 2048;
 const int SPACE = (SIZE * sizeof(int));
-
+const int ITEMS = 2;
 
 int main() {
 
@@ -30,20 +30,27 @@ int main() {
 	sem_wait(mutex);
 	printf("Consumer Mutex called wait...\n");
 		
-	for (int i = 0; i < SIZE; ++i) {
+	for (int i = 0; i < ITEMS; ++i) {
 		printf("Consumer: %d\n", tbl[i]);
-		sem_post(full);
-		printf("Consumer Full called post.\n");
 	}
+	sem_post(full);
+	sem_post(full);
 	sem_post(mutex);
 	printf("Consumer Mutex called post.\n");
 		
 	
 	munmap(tbl, SPACE);
+	shm_unlink("table");
+
 	
 	sem_close(mutex);
 	sem_close(full);
-
+	
+	sem_unlink("mutex");
+	sem_unlink("full");
+	
+	sem_destroy(mutex);
+	sem_destroy(full);
 
 	return 0;
 }
