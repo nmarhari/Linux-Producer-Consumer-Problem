@@ -18,36 +18,40 @@ const int SPACE = (SIZE * sizeof(int));
 
 int main() {
 
+
 	sem_t *mutex = sem_open("mutex", O_CREAT, 0666, 1);
 	if (mutex == SEM_FAILED) { perror("error creating mutex"); exit(EXIT_FAILURE); }
-	sem_t *full = sem_open("full", O_CREAT,0666, 2);
+	sem_t *full = sem_open("full", O_CREAT, 0666, 2);
 	if (full == SEM_FAILED) { perror("error creating full"); exit(EXIT_FAILURE); }
 	sem_t *empty = sem_open("empty", O_CREAT, 0666, SIZE);
 	if (empty == SEM_FAILED) { perror("error creating empty"); exit(EXIT_FAILURE); }
+	printf("Opened semaphores.\n");
 
-	int shm = shm_open("table", O_RDONLY, 0666);
+	int table = shm_open("table", O_CREAT|O_RDWR, 0666);
+	if (table == -1) { perror("error creating memory"); exit(EXIT_FAILURE); }
+	
+	ftruncate(table, SIZE);
+	
+	int *tbl = (int*)mmap(0, SPACE, PROT_READ|PROT_WRITE, MAP_SHARED, table, 0);
 
+	printf("Producer mapped address: %p\n", tbl);
 	
-	int *tbl = (int*)mmap(0, SIZE, PROT_READ, MAP_SHARED, shm, 0);
-	printf("Consumer mapped address: %p\n", tbl);
-	
-	printf("consumer started consuming data\n");
+	printf("producer started producing data\n");
 	for (int i = 0; i < SIZE; i++) {
-		sem_wait(full);
-		printf("prod passed wait full");
-		if (sem_wait(full) == -1) { perror("error waiting on full"); exit(EXIT_FAILURE); }
+		sem_wait(empty);
+		if (sem_wait(empty) == -1) { perror("error waiting on empty"); exit(EXIT_FAILURE); }
+		printf("called wait(empty)");
 		sem_wait(mutex);
-		if (sem_wait(mutex) == -1) { perror("error waiting on mutex"); exit(EXIT_FAILURE); }
-		printf("inside for loop cons");
-		printf("Consumer: %d\n", tbl[i]);
+		if (sem_wait(mutex) == -1) { perror("error waiting on mutex"); exit(EXIT_FAILURE); }		
+		printf("inside for loop prod");
+		tbl[i] = i;
+		printf("Producer: %d\n", i);
 		sem_post(mutex);
-		sem_post(empty);
+		sem_post(full);
 	}
-		
 	
 	munmap(tbl, SPACE);
-	close(shm);
-
+	close(table);
 	
 	sem_close(mutex);
 	sem_close(full);
@@ -56,8 +60,10 @@ int main() {
 	sem_unlink("mutex");
 	sem_unlink("full");
 	sem_unlink("empty");
-
-	printf("Consumer exiting.\n");
 	
+	shm_unlink("table");
+	printf("Producer exiting.\n");
+
+
 	return 0;
 }
