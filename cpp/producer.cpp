@@ -14,27 +14,29 @@
 #include <string.h>
 
 const int SIZE = 2;
-const int SPACE = (SIZE * sizeof(int));
+const int BUF_SIZE = 2;
+
+struct shmbuf {
+	sem_t mutex;
+	sem_t full;
+	sem_t empty;
+	int buf[BUF_SIZE];
+};
 
 int main() {
 
-
-	sem_t *mutex = sem_open("mutex", O_CREAT, 0666, 1);
-	if (mutex == SEM_FAILED) { perror("error creating mutex"); exit(EXIT_FAILURE); }
-	sem_t *full = sem_open("full", O_CREAT, 0666, 0);
-	if (full == SEM_FAILED) { perror("error creating full"); exit(EXIT_FAILURE); }
-	sem_t *empty = sem_open("empty", O_CREAT, 0666, SIZE);
-	if (empty == SEM_FAILED) { perror("error creating empty"); exit(EXIT_FAILURE); }
-	printf("Opened semaphores.\n");
-
-	int table = shm_open("table", O_CREAT|O_RDWR, 0666);
-	if (table == -1) { perror("error creating memory"); exit(EXIT_FAILURE); }
+	int fd = shm_open("table", O_CREAT|O_RDWR, 0666);
+	if (fd == -1) { perror("error creating memory"); exit(EXIT_FAILURE); }
 	
-	ftruncate(table, SIZE);
+	if(ftruncate(fd, sizeof(struct shmbuf)) == -1) { errExit("ftruncate");
 	
-	int *tbl = (int*)mmap(0, SPACE, PROT_READ|PROT_WRITE, MAP_SHARED, table, 0);
+	struct shmbuf *shmp = mmap(NULL, sizeof(*shmp), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
 
-	printf("Producer mapped address: %p\n", tbl);
+	printf("Producer mapped address: %p\n", fd);
+							
+	sem_init(&shmp->mutex, 1, 1);
+	sem_init(&shmp->full, 1, 0);
+	sem_init(&shmp->empty, 1, 2);
 	
 	printf("producer started producing data\n");
 	for (int i = 0; i < SIZE; i++) {
