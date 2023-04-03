@@ -14,13 +14,12 @@
 #include <string.h>
 
 const int SIZE = 2;
-const int BUF_SIZE = 2;
 
 struct shmbuf {
 	sem_t mutex;
 	sem_t full;
 	sem_t empty;
-	int buf[BUF_SIZE];
+	int buf[SIZE];
 };
 
 int main() {
@@ -31,24 +30,17 @@ int main() {
 	if(ftruncate(fd, sizeof(struct shmbuf)) == -1) { errExit("ftruncate");
 	
 	struct shmbuf *shmp = mmap(NULL, sizeof(*shmp), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-
-	printf("Producer mapped address: %p\n", fd);
-							
-	sem_init(&shmp->mutex, 1, 1);
-	sem_init(&shmp->full, 1, 0);
-	sem_init(&shmp->empty, 1, 2);
+	if (shmp == MAP_FAILED) { errExit("map failed");
 	
-	printf("producer started producing data\n");
+	printf("Producer started producing data\n");
 	for (int i = 0; i < SIZE; i++) {
-		sem_wait(empty);
-		printf("called wait(empty)");
-		sem_wait(mutex);		
-		printf("inside for loop prod");
-		tbl[i] = i;
-		printf("Producer: %d\n", i);
-		sem_post(mutex);
-		sem_post(full);
+		shmp->buf[i] = i;
+		printf("Producer wrote to memory in buf[%d]\n", i);
 	}
+			
+	sem_post(&shmp->sem_1);
+				 
+	sem_wait(&shmp->sem_2);
 	
 	munmap(tbl, SPACE);
 	close(table);
