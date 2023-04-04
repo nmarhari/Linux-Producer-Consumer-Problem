@@ -30,8 +30,12 @@ int main() {
 	
 	if(ftruncate(fd, sizeof(struct shmbuf)) == -1) { errExit("ftruncate"); }
 	
-	struct shmbuf *shmp = mmap(NULL, sizeof(*shmp), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+	struct shmbuf *shmp = (shmbuf*)mmap(NULL, sizeof(*shmp), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
 	if (shmp == MAP_FAILED) { errExit("map failed"); }
+	printf("Producer mapped address: %p\n", shmp);
+	
+	sem_init(&shmp->sem_1, 1, 0);
+	sem_init(&shmp->sem_2, 1, 0);
 	
 	printf("Producer started producing data\n");
 	for (int i = 0; i < SIZE; i++) {
@@ -40,8 +44,10 @@ int main() {
 	}
 			
 	sem_post(&shmp->sem_1);
+	printf("sempost sem_1 producer\n");
 				 
 	sem_wait(&shmp->sem_2);
+	printf("semwait sem_2 producer\n");
 	
 	munmap(shmp, SIZE);
 	close(fd);
