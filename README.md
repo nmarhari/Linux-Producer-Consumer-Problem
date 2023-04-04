@@ -23,6 +23,9 @@ The producer program will create 2 items to put into a shared memory buffer, and
 ## Customization
 
 You can customize the program by changing the following constants defined in the producer.cpp or consumer.cpp file:
+C VERSION:
+- `SIZE`: Size of the shared buffer
+C++ VERSION:
 - `SIZE`: Size of the shared buffer
 - `SEM_1`: Change to a different semaphore
 - `SEM_2`: Change to a different semaphore
