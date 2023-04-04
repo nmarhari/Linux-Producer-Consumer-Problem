@@ -13,9 +13,9 @@
 #include <stdio.h>
 #include <string.h>
 
-const int SIZE = 2;
-
 #define errExit(msg) do { perror(msg); exit(EXIT_FAILURE); } while (0)
+
+const int SIZE = 2;
 
 struct shmbuf {
 	sem_t sem_1;
