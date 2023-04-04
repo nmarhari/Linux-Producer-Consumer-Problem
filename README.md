@@ -12,9 +12,9 @@ This is a C++ implementation of the classic Producer-Consumer problem in Linux s
 1. Clone the repository OR download the files
 2. Navigate to the folder
 3. Compile using a couple commands:
-  a. g++ producer.cpp -pthread -lrt -o producer
-  b. g++ consumer.cpp -pthread -lrt -o consumer
-  c. ./producer & ./consumer &
+  - g++ producer.cpp -pthread -lrt -o producer
+  - g++ consumer.cpp -pthread -lrt -o consumer
+  - ./producer & ./consumer &
 4. Success!
 
 ## What this program is intended to do
