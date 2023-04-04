@@ -16,8 +16,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define errExit(msg) do { perror(msg); exit(EXIT_FAILURE); } while (0)
-
 #define SIZE 2
 #define SHM_KEY 0x1234
 
