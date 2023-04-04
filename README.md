@@ -10,7 +10,7 @@ This project includes two different implementations of the classic Producer-Cons
 ## Usage & Installation
 
 1. Clone the repository OR download the files
-2. Navigate to the folder
+2. Navigate to the folder titled C
 3. Compile using a couple commands:
   - gcc producer.c -pthread -lrt -o producer
   - gcc consumer.c -pthread -lrt -o consumer
