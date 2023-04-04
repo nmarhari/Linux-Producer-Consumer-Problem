@@ -11,7 +11,10 @@ This is a C++ implementation of the classic Producer-Consumer problem in Linux s
 
 1. Clone the repository OR download the files
 2. Navigate to the folder
-3. Compile using [in progress]
+3. Compile using a couple commands:
+  a. g++ producer.cpp -pthread -lrt -o producer
+  b. g++ consumer.cpp -pthread -lrt -o consumer
+  c. ./producer & ./consumer &
 4. Success!
 
 ## What this program is intended to do
@@ -21,9 +24,10 @@ The producer program will create 2 items to put into a shared memory buffer, and
 
 You can customize the program by changing the following constants defined in the producer.cpp or consumer.cpp file:
 - `SIZE`: Size of the shared buffer
-- `MUTEX`: Change to a different semaphore
-- `FULL`: Change to a different semaphore
-- `EMPTY`: Change to a different semaphore
+- `SEM_1`: Change to a different semaphore
+- `SEM_2`: Change to a different semaphore
+- `SEM_1, 1, 0`: Change last number in initialize to modify semaphore properties
+- `SEM_2, 1, 0`: Change last number in initialize to modify semaphore properties
 
 ## Contributors
 
