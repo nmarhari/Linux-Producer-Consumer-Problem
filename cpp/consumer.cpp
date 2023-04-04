@@ -16,10 +16,9 @@
 const int SIZE = 2;
 
 struct shmbuf {
-	sem_t mutex;
-	sem_t full;
-	sem_t empty;
-	int buf[BUF_SIZE];
+	sem_t sem_1;
+	sem_t sem_2;
+	int buf[SIZE];
 };
 
 int main() {
@@ -42,17 +41,11 @@ int main() {
 	
 	sem_post(&shmp->sem_2);
 	
-	munmap(tbl, SPACE);
-	close(shm);
-
+	munmap(shmp, SIZE);
+	close(fd);
 	
-	sem_close(mutex);
-	sem_close(full);
-	sem_close(empty);
-	
-	sem_unlink("mutex");
-	sem_unlink("full");
-	sem_unlink("empty");
+	sem_unlink("sem_1");
+	sem_unlink("sem_2");
 
 	printf("Consumer exiting.\n");
 	
