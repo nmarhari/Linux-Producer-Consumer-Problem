@@ -14,6 +14,9 @@ This is a C++ implementation of the classic Producer-Consumer problem in Linux s
 3. Compile using [in progress]
 4. Success!
 
+## What this program is intended to do
+The producer program will create 2 items to put into a shared memory buffer, and a producer will consume those items from the buffer until it is empty. This implementation is intended to demonstrate mutual exclusion, and uses semaphores in order to accomplish that goal. The producer and consumer processes shall notify the user what is happening internally.
+
 ## Customization
 
 You can customize the program by changing the following constants defined in the producer.cpp or consumer.cpp file:
