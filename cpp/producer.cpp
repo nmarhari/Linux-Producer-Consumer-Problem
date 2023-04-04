@@ -15,10 +15,11 @@
 
 const int SIZE = 2;
 
+#define errExit(msg) do { perror(msg); exit(EXIT_FAILURE); } while (0)
+
 struct shmbuf {
-	sem_t mutex;
-	sem_t full;
-	sem_t empty;
+	sem_t sem_1;
+	sem_t sem_2;
 	int buf[SIZE];
 };
 
@@ -27,10 +28,10 @@ int main() {
 	int fd = shm_open("table", O_CREAT|O_RDWR, 0666);
 	if (fd == -1) { perror("error creating memory"); exit(EXIT_FAILURE); }
 	
-	if(ftruncate(fd, sizeof(struct shmbuf)) == -1) { errExit("ftruncate");
+	if(ftruncate(fd, sizeof(struct shmbuf)) == -1) { errExit("ftruncate"); }
 	
 	struct shmbuf *shmp = mmap(NULL, sizeof(*shmp), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-	if (shmp == MAP_FAILED) { errExit("map failed");
+	if (shmp == MAP_FAILED) { errExit("map failed"); }
 	
 	printf("Producer started producing data\n");
 	for (int i = 0; i < SIZE; i++) {
@@ -42,16 +43,11 @@ int main() {
 				 
 	sem_wait(&shmp->sem_2);
 	
-	munmap(tbl, SPACE);
-	close(table);
+	munmap(shmp, SIZE);
+	close(fd);
 	
-	sem_close(mutex);
-	sem_close(full);
-	sem_close(empty);
-	
-	sem_unlink("mutex");
-	sem_unlink("full");
-	sem_unlink("empty");
+	sem_unlink("sem_1");
+	sem_unlink("sem_2");
 	
 	shm_unlink("table");
 	printf("Producer exiting.\n");
