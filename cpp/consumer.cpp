@@ -25,13 +25,11 @@ int main() {
 
 	int fd = shm_open("table", O_RDONLY, 0666);
 	
-	struct shmbuf *shmp = mmap(NULL, sizeof(*shmp), PROT_READ, MAP_SHARED, fd, 0);
+	struct shmbuf *shmp = (shmbuf*)mmap(NULL, sizeof(*shmp), PROT_READ, MAP_SHARED, fd, 0);
 	printf("Consumer mapped address: %p\n", shmp);
 	
-	sem_init(&shmp->sem_1, 1, 0);
-	sem_init(&shmp->sem_2, 1, 0);
-	
 	sem_wait(&shmp->sem_1);
+	printf("semwait sem_1 consumer\n");
 	printf("consumer started consuming data\n");
 	for (int i = 0; i < SIZE; i++) {
 		printf("Accessed shared memory buffer.\n");
@@ -40,6 +38,7 @@ int main() {
 	}
 	
 	sem_post(&shmp->sem_2);
+	printf("sempost sem_2 consumer\n");
 	
 	munmap(shmp, SIZE);
 	close(fd);
