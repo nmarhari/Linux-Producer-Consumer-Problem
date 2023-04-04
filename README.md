@@ -21,7 +21,7 @@ This project includes two different implementations of the classic Producer-Cons
 The producer program will create 2 items to put into a shared memory buffer, and a producer will consume those items from the buffer until it is empty. This implementation is intended to demonstrate mutual exclusion, and uses semaphores in order to accomplish that goal. The producer and consumer processes shall notify the user what is happening internally. A screenshot of example commands to run the processes and its output will be attached below.
 
 ## Example of usage
-https://imgur.com/UNW5Y3b
+https://imgur.com/a/UNW5Y3b
 
 ## Customization
 
