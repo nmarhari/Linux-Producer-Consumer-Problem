@@ -9,13 +9,14 @@ This project includes a C implementation of the classic Producer-Consumer proble
 
 ## Usage & Installation
 
-1. Clone the repository OR download the files
-2. Navigate to the folder titled C
-3. Compile using a couple commands:
+1. Clone the repository OR download the files by navigating to the folder titled "C"
+2. Open the folder in your Linux terminal
+3. Make sure to have GCC up to date (gcc --version)
+4. Compile using a couple commands:
   - gcc producer.c -pthread -lrt -o producer
   - gcc consumer.c -pthread -lrt -o consumer
   - ./producer & ./consumer &
-4. Success!
+5. Success!
 
 ## What this program is intended to do
 In computer science, a producer-consumer example program is a program that simulates a scenario where there are two types of process, one producing data and the other consuming it. The producer process generates data items and puts them into a shared buffer, while the consumer process reads data from the buffer and processes it.
