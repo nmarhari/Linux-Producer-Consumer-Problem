@@ -44,7 +44,7 @@ int main() {
 	if (shmptr == (void*)-1) printf("shm attach error\n");
 	
 	struct buffer produce_next;
-	for (int i = 0; i < SIZE; i++) {
+	for (int i = 0; i < 10; i++) {
 		while((shmptr->sem_1 + 1) % SIZE == shmptr->sem_2) {
 			printf("Producer started producing data.\n");
 			sleep(1); 
