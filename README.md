@@ -35,7 +35,7 @@ https://imgur.com/UNW5Y3b
 
 ## Customization
 
-You can customize the program by changing the following constants defined in the producer.cpp or consumer.cpp file:
+You can customize the program by changing the following constants defined in the producer.c or consumer.c file:
 C VERSION:
 - `SIZE`: Size of the shared buffer
 
