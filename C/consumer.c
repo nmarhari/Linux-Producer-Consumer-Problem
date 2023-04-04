@@ -44,7 +44,7 @@ int main() {
 	if (shmptr == (void*)-1) printf("shm attach error\n");
 	
 	struct buffer consume_next;
-	for (int i = 0; i < SIZE; i++) {
+	for (int i = 0; i < 10; i++) {
 		while(shmptr->sem_1 == shmptr->sem_2) {
 			printf("Consumer started consuming data.\n");
 			sleep(1); 
