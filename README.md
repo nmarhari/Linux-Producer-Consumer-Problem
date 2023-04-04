@@ -6,6 +6,7 @@ This project includes a C implementation of the classic Producer-Consumer proble
 
 - Linux Operating System (Testing done on Ubuntu)
 - GCC compiler
+- Terminal
 
 ## Usage & Installation
 
@@ -37,12 +38,6 @@ https://imgur.com/UNW5Y3b
 You can customize the program by changing the following constants defined in the producer.cpp or consumer.cpp file:
 C VERSION:
 - `SIZE`: Size of the shared buffer
-C++ VERSION:
-- `SIZE`: Size of the shared buffer
-- `SEM_1`: Change to a different semaphore
-- `SEM_2`: Change to a different semaphore
-- `SEM_1, 1, 0`: Change last number in initialize to modify semaphore properties
-- `SEM_2, 1, 0`: Change last number in initialize to modify semaphore properties
 
 ## Contributors
 
