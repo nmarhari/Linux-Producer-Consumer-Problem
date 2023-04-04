@@ -13,51 +13,47 @@
 #include <stdio.h>
 #include <string.h>
 
+#define errExit(msg) do { perror(msg); exit(EXIT_FAILURE); } while (0)
+
 const int SIZE = 2;
-const int SPACE = (SIZE * sizeof(int));
+
+struct shmbuf {
+	sem_t sem_1;
+	sem_t sem_2;
+	int buf[SIZE];
+};
 
 int main() {
 
-
-	sem_t *mutex = sem_open("mutex", O_CREAT, 0666, 1);
-	if (mutex == SEM_FAILED) { perror("error creating mutex"); exit(EXIT_FAILURE); }
-	sem_t *full = sem_open("full", O_CREAT, 0666, 0);
-	if (full == SEM_FAILED) { perror("error creating full"); exit(EXIT_FAILURE); }
-	sem_t *empty = sem_open("empty", O_CREAT, 0666, SIZE);
-	if (empty == SEM_FAILED) { perror("error creating empty"); exit(EXIT_FAILURE); }
-	printf("Opened semaphores.\n");
-
-	int table = shm_open("table", O_CREAT|O_RDWR, 0666);
-	if (table == -1) { perror("error creating memory"); exit(EXIT_FAILURE); }
+	int fd = shm_open("table", O_CREAT|O_RDWR, 0666);
+	if (fd == -1) { perror("error creating memory"); exit(EXIT_FAILURE); }
 	
-	ftruncate(table, SIZE);
+	if(ftruncate(fd, sizeof(struct shmbuf)) == -1) { errExit("ftruncate"); }
 	
-	int *tbl = (int*)mmap(0, SPACE, PROT_READ|PROT_WRITE, MAP_SHARED, table, 0);
-
-	printf("Producer mapped address: %p\n", tbl);
+	struct shmbuf *shmp = (shmbuf*)mmap(NULL, sizeof(*shmp), PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+	if (shmp == MAP_FAILED) { errExit("map failed"); }
+	printf("Producer mapped address: %p\n", shmp);
 	
-	printf("producer started producing data\n");
+	sem_init(&shmp->sem_1, 1, 0);
+	sem_init(&shmp->sem_2, 1, 0);
+	
+	printf("Producer started producing data\n");
 	for (int i = 0; i < SIZE; i++) {
-		sem_wait(empty);
-		printf("called wait(empty)");
-		sem_wait(mutex);		
-		printf("inside for loop prod");
-		tbl[i] = i;
-		printf("Producer: %d\n", i);
-		sem_post(mutex);
-		sem_post(full);
+		shmp->buf[i] = i;
+		printf("Producer wrote to memory in buf[%d]\n", i);
 	}
+			
+	sem_post(&shmp->sem_1);
+	printf("sempost sem_1 producer\n");
+				 
+	sem_wait(&shmp->sem_2);
+	printf("semwait sem_2 producer\n");
 	
-	munmap(tbl, SPACE);
-	close(table);
+	munmap(shmp, SIZE);
+	close(fd);
 	
-	sem_close(mutex);
-	sem_close(full);
-	sem_close(empty);
-	
-	sem_unlink("mutex");
-	sem_unlink("full");
-	sem_unlink("empty");
+	sem_unlink("sem_1");
+	sem_unlink("sem_2");
 	
 	shm_unlink("table");
 	printf("Producer exiting.\n");
