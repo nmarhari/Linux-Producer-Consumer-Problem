@@ -1,6 +1,6 @@
 # Linux Producer Consumer Problem
 
-This is a C++ implementation of the classic Producer-Consumer problem in Linux using semaphores, System V IPC shared memory, and two processes.
+This project includes two different implementations of the classic Producer-Consumer problem in Linux using semaphores, System V IPC shared memory, and two processes. One of these implementations is in C, and the other is in C++. The C++ version is currently incomplete, so please take a look at the C version instead.
 
 ## Requirements
 
@@ -12,8 +12,8 @@ This is a C++ implementation of the classic Producer-Consumer problem in Linux u
 1. Clone the repository OR download the files
 2. Navigate to the folder
 3. Compile using a couple commands:
-  - g++ producer.cpp -pthread -lrt -o producer
-  - g++ consumer.cpp -pthread -lrt -o consumer
+  - gcc producer.c -pthread -lrt -o producer
+  - gcc consumer.c -pthread -lrt -o consumer
   - ./producer & ./consumer &
 4. Success!
 
