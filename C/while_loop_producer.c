@@ -28,7 +28,7 @@ struct shmbuf {
 
 void* producer_thread(void* arg) {
 
-	printf("Producer thread created\n");
+	printf("Producer thread created.\n");
 	
 	time_t t;
 	srand((unsigned) time(&t));
@@ -37,10 +37,10 @@ void* producer_thread(void* arg) {
 	struct shmbuf *shmptr;
 	
 	shm = shmget(SHM_KEY, sizeof(struct shmbuf), 0644|IPC_CREAT);
-	if (shm == -1) printf("shm key error\n");
+	if (shm == -1) printf("SHM key error\n");
 	
 	shmptr = shmat(shm, NULL, 0);
-	if (shm == -1) printf("shm attach error\n");
+	if (shm == -1) printf("SHM attach error\n");
 	
 	sem_init(&shmptr->mutex, 1, 1);
 	sem_init(&shmptr->empty, 1, SIZE);	
@@ -50,7 +50,6 @@ void* producer_thread(void* arg) {
 	
 	int i, j = 1;
 	sem_getvalue(&shmptr->empty, &i);
-	printf("%d\n", i);
 	while (i > 0) {
 	
 		int x = rand();
