@@ -44,4 +44,4 @@ You can customize the program by changing the following constants defined in **B
 ## Contributors
 
 - [nmarhari](https://github.com/nmarhari)
-- This implementation was created by Nassim Marhari. It is based on the classic producer-consumer problem and uses the [System V IPC](https://man7.org/linux/man-pages/man2/shmget.2.html) shared memory mechanism in Linux.
+- This implementation was created by Nassim Marhari. It is based on the classic producer-consumer problem and uses the [System V IPC](https://man7.org/linux/man-pages/man3/shm_open.3.html) shared memory mechanism in Linux.
