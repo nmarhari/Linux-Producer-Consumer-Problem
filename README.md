@@ -28,7 +28,7 @@ To prevent synchronization issues, the producer and consumer processes need to c
 
 The producer-consumer example program is commonly used to illustrate how to implement process synchronization, potentially illustrate the similarities with multithreaded programming, and demonstrate the importance of using synchronization primitives to prevent race conditions and other synchronization issues.
 
-The producer program will create two items to put into a shared memory buffer, and a producer will consume those items from the buffer until it is empty. This implementation is intended to demonstrate mutual exclusion and uses semaphores in order to accomplish that goal. The producer and consumer processes shall notify the user of what is happening internally. A screenshot of example commands to run the processes and their output will be attached below.
+In this particular implementation, the producer process will create a thread that will create a shared memory buffer and initialize two semaphores. The consumer process will create a thread that will attach to the shared memory buffer created by the producer process. The shared memory buffer contains the two semaphores as well as a table for the two processes/threads to exchange information. The processes/threads will exhibit mutual exclusion while passing arbitrary integers from the producer to the consumer. Once a specified number of iterations are complete, each thread will have finished their goal. The semaphores will be destroyed and the shared memory will be detached.
 
 ## Example of usage
 https://imgur.com/UNW5Y3b
