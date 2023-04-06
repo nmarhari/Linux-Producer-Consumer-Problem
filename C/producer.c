@@ -1,5 +1,6 @@
 // Nassim Marhari
 // Linux Producer Consumer problem
+// producer.c
 
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -16,47 +17,74 @@
 #include <stdio.h>
 #include <string.h>
 
-#define SIZE 2		// only 2 items in the buffer
+#define SIZE 2		// only 2 items in the table
 #define SHM_KEY 0x1234
-
-struct buffer {
-	int id;		// for producer/consumer id
-};
+#define ITERATIONS 10
 
 struct shmbuf {
-	int sem_1;	// semaphore 1
-	int sem_2;	// semaphore 2
-	struct buffer buf[SIZE];
+	sem_t mutex;	// semaphore 1
+	sem_t empty;	// semaphore 2
+	int table[SIZE];
 };
 
-int main() {
+void* producer_thread(void* arg) {
 
+	printf("Producer thread created.\n");
+	
 	time_t t;
 	srand((unsigned) time(&t));
-	int x, y;
+	int shm;
 	
 	struct shmbuf *shmptr;
 	
-	x = shmget(SHM_KEY, sizeof(struct shmbuf), 0644|IPC_CREAT);	// create shm key for shared memory
-	if (x == -1) printf("shm key error\n");	
+	shm = shmget(SHM_KEY, sizeof(struct shmbuf), 0644|IPC_CREAT);
+	if (shm == -1) printf("SHM key error\n");
 	
-	shmptr = shmat(x, NULL, 0);
-	if (shmptr == (void*)-1) printf("shm attach error\n");		// attach shared memory
+	shmptr = shmat(shm, NULL, 0);
+	if (shm == -1) printf("SHM attach error\n");
 	
-	struct buffer produce_next;					// produce using for loop
-	for (int i = 0; i < 10; i++) {
-		while((shmptr->sem_1 + 1) % SIZE == shmptr->sem_2) {	// while there is a slot open...
-			printf("Producer started producing data.\n");	// produce something
-			sleep(1); 
-			continue;
+	sem_init(&shmptr->mutex, 1, 1);
+	sem_init(&shmptr->empty, 1, SIZE);	
+	
+	for (int it = 0; it < ITERATIONS; it++) {
+	
+		sleep(1);
+		sem_wait(&shmptr->mutex);
+		printf("Producer entered...\n");
+		
+		int i, j = 1;
+		sem_getvalue(&shmptr->empty, &i);
+		while (i > 0) {
+		
+			int x = rand();
+			shmptr->table[j] = x;
+			sem_wait(&shmptr->empty);
+			printf("Produced item %d\n", j);
+			printf("Item %d produced = ", j);
+			printf("%d\n", x);
+			++j;
+			sem_getvalue(&shmptr->empty, &i);
+
 		}
-	produce_next.id = shmptr->sem_1;				// prod next = semaphore1
-	shmptr->buf[shmptr->sem_1] = produce_next;			// buffer[semaphore 1] = next
-	shmptr->sem_1 = (shmptr->sem_1 + 1) % SIZE;			// semaphore 1 = next % size
-	
-	printf("Producer id: %d\n", produce_next.id);			// show producer id
+		
+		printf("Producer done producing items since the table is full.\n");
+		
+		sem_post(&shmptr->mutex);
 	
 	}
+	
+	printf("Producer thread has finished working.\n");
+	
+	sem_destroy(&shmptr->mutex);
+	sem_destroy(&shmptr->empty);
+}
+
+int main() {
+	
+	pthread_t producer;
+	pthread_create (&producer, NULL, producer_thread, NULL);
+	
+	pthread_join(producer, NULL);
 	
 	return 0;
 }
