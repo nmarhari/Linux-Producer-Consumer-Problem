@@ -73,10 +73,10 @@ void* producer_thread(void* arg) {
 	
 	}
 	
+	printf("Producer thread has finished working.\n");
+	
 	sem_destroy(&shmptr->mutex);
 	sem_destroy(&shmptr->empty);
-		
-	
 }
 
 int main() {
