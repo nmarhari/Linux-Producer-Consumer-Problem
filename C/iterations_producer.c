@@ -19,6 +19,7 @@
 
 #define SIZE 2		// only 2 items in the table
 #define SHM_KEY 0x1234
+#define ITERATIONS 10
 
 struct shmbuf {
 	sem_t mutex;	// semaphore 1
@@ -45,7 +46,7 @@ void* producer_thread(void* arg) {
 	sem_init(&shmptr->mutex, 1, 1);
 	sem_init(&shmptr->empty, 1, SIZE);	
 	
-	for (int z = 0; z < 10; ++z) {
+	for (int it = 0; it < ITERATIONS; it++) {
 	
 		sleep(1);
 		sem_wait(&shmptr->mutex);
