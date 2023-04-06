@@ -72,6 +72,8 @@ void* consumer_thread(void* arg) {
 	}
 	
 	printf("Consumer thread has finished working.\n");
+	
+	shmdt(shmptr);
 }
 
 int main() {
