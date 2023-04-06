@@ -77,6 +77,7 @@ void* producer_thread(void* arg) {
 	
 	sem_destroy(&shmptr->mutex);
 	sem_destroy(&shmptr->empty);
+	shmdt(shmptr);
 }
 
 int main() {
