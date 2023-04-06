@@ -30,13 +30,6 @@ The producer-consumer example program is commonly used to illustrate how to impl
 
 In this particular implementation, the producer process will create a thread that will create a shared memory buffer and initialize two semaphores. The consumer process will create a thread that will attach to the shared memory buffer created by the producer process. The shared memory buffer contains the two semaphores as well as a table for the two processes/threads to exchange information. The processes/threads will exhibit mutual exclusion while passing arbitrary integers from the producer to the consumer. Once a specified number of iterations are complete, each thread will have finished their goal. The semaphores will be destroyed and the shared memory will be detached.
 
-## Example of usage
-Note: `ITERATIONS` is set to 10
-![1](https://user-images.githubusercontent.com/92116345/230514038-8c7e5eae-dbab-4788-bec3-b0291243365a.png)
-![2](https://user-images.githubusercontent.com/92116345/230514047-ed2fb798-b3ed-44f8-9bdf-10ce706620ee.png)
-![3](https://user-images.githubusercontent.com/92116345/230514055-a5f93304-62ed-40ca-ad54-e7545a013019.png)
-![4](https://user-images.githubusercontent.com/92116345/230514058-1906a0d3-41ca-43bd-a7ec-03a6f1ac32c4.png)
-
 ## Customization
 
 You can customize the program by changing the following constants defined in **BOTH** the producer.c and consumer.c files:
@@ -44,6 +37,13 @@ You can customize the program by changing the following constants defined in **B
 - `SIZE`: Size of the shared memory table
 - `SHM_KEY`: Key used for the shared memory buffer
 - `ITERATIONS`: Number of iterations you would like the two processes to attempt the critical section
+
+## Example of usage
+Note: `ITERATIONS` is set to 10
+![1](https://user-images.githubusercontent.com/92116345/230514038-8c7e5eae-dbab-4788-bec3-b0291243365a.png)
+![2](https://user-images.githubusercontent.com/92116345/230514047-ed2fb798-b3ed-44f8-9bdf-10ce706620ee.png)
+![3](https://user-images.githubusercontent.com/92116345/230514055-a5f93304-62ed-40ca-ad54-e7545a013019.png)
+![4](https://user-images.githubusercontent.com/92116345/230514058-1906a0d3-41ca-43bd-a7ec-03a6f1ac32c4.png)
 
 ## Contributors
 
