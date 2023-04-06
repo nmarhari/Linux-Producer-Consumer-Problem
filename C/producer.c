@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define SIZE 2		// only 2 items in the buffer
+#define SIZE 2		// only 2 items in the table
 #define SHM_KEY 0x1234
 
 /*struct buffer {
@@ -26,8 +26,8 @@
 
 struct shmbuf {
 	sem_t mutex;	// semaphore 1
-	sem_t sem_2;	// semaphore 2
-	int buffer[SIZE];
+	sem_t full;	// semaphore 2
+	int table[SIZE];
 };
 
 void* producer_thread(void* arg) {
@@ -51,12 +51,17 @@ void* producer_thread(void* arg) {
 	sem_wait(&shmptr->mutex);
 	printf("Producer entered...\n");
 	
-	for (int i = 0; i < 2; i++) {
-		printf("produced item %d\n", i);
+	for (int i = 1; i < 3; i++) {
+	
+		int x = rand();
+		shmptr->table[i] = x;
+		printf("Produced item %d\n", i);
+		printf("Item %d produced = ", i);
+		printf("%d\n", x);
 	
 	}
 	
-	printf("Producer done producing items.\n");
+	printf("Producer done producing items since the table is full.\n");
 	
 	sem_post(&shmptr->mutex);
 	
@@ -70,7 +75,6 @@ int main() {
 	pthread_create (&producer, NULL, producer_thread, NULL);
 	
 	pthread_join(producer, NULL);
-	
 	
 	return 0;
 }
