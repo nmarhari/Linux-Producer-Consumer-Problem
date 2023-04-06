@@ -1,5 +1,6 @@
 // Nassim Marhari
 // Linux Producer Consumer problem
+// producer.c
 
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -19,44 +20,57 @@
 #define SIZE 2		// only 2 items in the buffer
 #define SHM_KEY 0x1234
 
-struct buffer {
+/*struct buffer {
 	int id;		// for producer/consumer id
-};
+};*/
 
 struct shmbuf {
-	int sem_1;	// semaphore 1
-	int sem_2;	// semaphore 2
-	struct buffer buf[SIZE];
+	sem_t mutex;	// semaphore 1
+	sem_t sem_2;	// semaphore 2
+	int buffer[SIZE];
 };
 
-int main() {
+void* producer_thread(void* arg) {
 
+	printf("Producer thread created\n");
+	
 	time_t t;
 	srand((unsigned) time(&t));
-	int x, y;
+	int shm;
 	
 	struct shmbuf *shmptr;
 	
-	x = shmget(SHM_KEY, sizeof(struct shmbuf), 0644|IPC_CREAT);	// create shm key for shared memory
-	if (x == -1) printf("shm key error\n");	
+	shm = shmget(SHM_KEY, sizeof(struct shmbuf), 0644|IPC_CREAT);
+	if (shm == -1) printf("shm key error\n");
 	
-	shmptr = shmat(x, NULL, 0);
-	if (shmptr == (void*)-1) printf("shm attach error\n");		// attach shared memory
+	shmptr = shmat(shm, NULL, 0);
+	if (shm == (void*)-1) printf("shm attach error\n");
 	
-	struct buffer produce_next;					// produce using for loop
-	for (int i = 0; i < 10; i++) {
-		while((shmptr->sem_1 + 1) % SIZE == shmptr->sem_2) {	// while there is a slot open...
-			printf("Producer started producing data.\n");	// produce something
-			sleep(1); 
-			continue;
-		}
-	produce_next.id = shmptr->sem_1;				// prod next = semaphore1
-	shmptr->buf[shmptr->sem_1] = produce_next;			// buffer[semaphore 1] = next
-	shmptr->sem_1 = (shmptr->sem_1 + 1) % SIZE;			// semaphore 1 = next % size
+	sem_init(&shmptr->mutex, 1, 1);	
 	
-	printf("Producer id: %d\n", produce_next.id);			// show producer id
+	sem_wait(&shmptr->mutex);
+	printf("Producer entered...\n");
+	
+	for (int i = 0; i < 2; i++) {
+		printf("produced item %d\n", i);
 	
 	}
+	
+	printf("Producer done producing items.\n");
+	
+	sem_post(&shmptr->mutex);
+	
+	sem_destroy(&shmptr->mutex);
+	
+}
+
+int main() {
+	
+	pthread_t producer;
+	pthread_create (&producer, NULL, producer_thread, NULL);
+	
+	pthread_join(producer, NULL);
+	
 	
 	return 0;
 }
