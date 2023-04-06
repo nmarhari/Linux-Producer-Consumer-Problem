@@ -4,7 +4,7 @@ This project includes a C implementation of the classic Producer-Consumer proble
 
 ## Requirements
 
-- Linux Operating System (Testing done on Ubuntu in VirtualBox)
+- Linux Operating System (Testing was done on Ubuntu in VirtualBox)
 - GCC compiler
 - Terminal
 
