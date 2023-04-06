@@ -28,7 +28,7 @@ struct shmbuf {
 
 void* consumer_thread(void* arg) {
 	
-	printf("consumer thread created\n");
+	printf("Consumer thread created.\n");
 	
 	time_t t;
 	srand((unsigned) time(&t));
@@ -37,10 +37,10 @@ void* consumer_thread(void* arg) {
 	struct shmbuf *shmptr;
 	
 	shm = shmget(SHM_KEY, sizeof(struct shmbuf), 0644|IPC_CREAT);
-	if (shm == -1) printf("shm key error\n");
+	if (shm == -1) printf("SHM key error\n");
 	
 	shmptr = shmat(shm, NULL, 0);
-	if (shm == -1) printf("shm attach error\n");
+	if (shm == -1) printf("SHM attach error\n");
 	
 	sleep(1);
 	
@@ -57,8 +57,8 @@ void* consumer_thread(void* arg) {
 		printf("Consumed item %d\n", j);
 		printf("Item %d consumed = ", j);
 		printf("%d\n", x);
-		sem_getvalue(&shmptr->empty, &i);
 		++j;
+		sem_getvalue(&shmptr->empty, &i);
 		
 	}
 
