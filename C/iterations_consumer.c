@@ -70,6 +70,8 @@ void* consumer_thread(void* arg) {
 
 		sem_post(&shmptr->mutex);
 	}
+	
+	printf("Consumer thread has finished working.\n");
 }
 
 int main() {
