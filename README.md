@@ -1,6 +1,6 @@
 # Linux Producer Consumer Problem
 
-This project includes a C implementation of the classic Producer-Consumer problem in Linux using semaphores, shared memory, and two processes. This implementation is desgined to demonstrate how two processes can communicate with each other using a shared memory buffer.
+This project includes a C implementation of the classic Producer-Consumer problem in Linux using semaphores, shared memory, threads, and two processes. This implementation is desgined to demonstrate how two processes with threads can communicate with each other using a shared memory buffer.
 
 ## Requirements
 
@@ -35,15 +35,13 @@ https://imgur.com/UNW5Y3b
 
 ## Customization
 
-You can customize the program by changing the following constants defined in the producer.c or consumer.c file:
-C VERSION:
-- `SIZE`: Size of the shared buffer
+You can customize the program by changing the following constants defined in **BOTH** the producer.c and consumer.c files:
+(You must change the constants in both of the files or the program will not function properly.)
+- `SIZE`: Size of the shared memory table
+- `SHM_KEY`: Key used for the shared memory buffer
+- `ITERATIONS`: Number of iterations you would like the two processes to attempt the critical section
 
 ## Contributors
 
 - [nmarhari](https://github.com/nmarhari)
-- This implementation was created by [nmarhari]. It is based on the classic producer-consumer problem and uses the System V IPC shared memory mechanism in Linux. (https://man7.org/linux/man-pages/man2/shmget.2.html)
-
-## License
-
-This implementation is released under the MIT License. You are free to use, modify, and distribute this code, as long as you include the original license file and attribution to the original author.
+- This implementation was created by [nmarhari]. It is based on the classic producer-consumer problem and uses the [System V IPC](https://man7.org/linux/man-pages/man2/shmget.2.html) shared memory mechanism in Linux.
