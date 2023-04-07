@@ -74,6 +74,7 @@ void* consumer_thread(void* arg) {
 	printf("Consumer thread has finished working.\n");
 	
 	shmdt(shmptr);			// detach shared memory buffer
+	shmctl(shm, IPC_RMID, NULL);	// remove shared memory buffer
 }
 
 int main() {
