@@ -50,5 +50,5 @@ The creation of this producer consumer problem implementation had many twists an
 
 ## Contributors
 
-- [nmarhari](https://github.com/nmarhari)
+- [nmarhari](https://github.com/nmarhari) with a special thank you to Khushi Patel
 - This implementation was created by Nassim Marhari. It is based on the classic producer-consumer problem and uses the [System V IPC](https://man7.org/linux/man-pages/man3/shm_open.3.html) shared memory mechanism in Linux.
