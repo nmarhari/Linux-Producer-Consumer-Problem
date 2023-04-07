@@ -48,7 +48,7 @@ void* consumer_thread(void* arg) {
 	for (int it = 0; it < ITERATIONS; it++) {
 	
 		sleep(1);
-		sem_wait(&shmptr->mutex);			// Calling wait to ensure mutual exclusion
+		sem_wait(&shmptr->mutex);			// Calling wait on "mutex" to ensure mutual exclusion
 		printf("Consumer entered...\n");		// Entered critical section
 		
 		int i, j = 1;					// i = empty's value, j = table index
